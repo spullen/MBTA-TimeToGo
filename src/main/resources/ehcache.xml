@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false" />
+    <cache name="routes"
+           maxElementsInMemory="1000"
+           timeToIdleSeconds="12000"
+           timeToLiveSeconds="12000"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU" />
+</ehcache>

@@ -81,6 +81,7 @@ dependencies {
     compile('org.springframework:spring-context-support')
     compile('com.google.maps:google-maps-services:0.1.7')
     compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("net.sf.ehcache:ehcache:2.1.0")
     compile('joda-time:joda-time:2.2')
     compile('log4j:log4j:1.2.17')
 
