@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 @JsonIgnoreProperties(ignoreUnknown = true)
-class StopsResponse {
+class StopsByRouteResponse {
 
     @JsonProperty('direction')
     List<Direction> directions

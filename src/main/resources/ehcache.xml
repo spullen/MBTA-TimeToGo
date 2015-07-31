@@ -7,4 +7,11 @@
            timeToLiveSeconds="12000"
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="stopsByRoute"
+           maxElementsInMemory="1000"
+           timeToIdleSeconds="12000"
+           timeToLiveSeconds="12000"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU" />
 </ehcache>
