@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 @Controller
 class PredictionsController extends ApiBaseController {
 
-    // TODO: create prediction service to pull mbta and google map data 
+    // TODO: create prediction service to pull mbta and google map data
     private MBTAService mbtaService
 
     @Autowired

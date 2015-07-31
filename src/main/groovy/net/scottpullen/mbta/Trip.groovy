@@ -28,6 +28,6 @@ class Trip {
     @JsonProperty('pre_away')
     Integer preAway
 
-    @JsonProperty('vehicle')
-    Vehicle vehicle
+    /*@JsonProperty('vehicle')
+    Vehicle vehicle*/
 }
