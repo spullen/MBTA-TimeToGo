@@ -3,15 +3,29 @@
     <defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false" />
     <cache name="routes"
            maxElementsInMemory="1000"
-           timeToIdleSeconds="12000"
-           timeToLiveSeconds="12000"
+           timeToIdleSeconds="2629743"
+           timeToLiveSeconds="2629743"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="stops"
+           maxElementsInMemory="1000"
+           timeToIdleSeconds="2629743"
+           timeToLiveSeconds="2629743"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="stop"
+           maxElementsInMemory="1000"
+           timeToIdleSeconds="2629743"
+           timeToLiveSeconds="2629743"
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU" />
 
     <cache name="stopsByRoute"
            maxElementsInMemory="1000"
-           timeToIdleSeconds="12000"
-           timeToLiveSeconds="12000"
+           timeToIdleSeconds="2629743"
+           timeToLiveSeconds="2629743"
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU" />
 </ehcache>

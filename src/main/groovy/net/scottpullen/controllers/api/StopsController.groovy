@@ -2,6 +2,7 @@ package net.scottpullen.controllers.api
 
 import groovy.util.logging.Slf4j
 import net.scottpullen.mbta.Direction
+import net.scottpullen.mbta.Stop
 import net.scottpullen.services.MBTAService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -21,8 +22,18 @@ class StopsController extends ApiBaseController {
         this.mbtaService = mbtaService
     }
 
-    @RequestMapping(value='/routes/{routeId}/stops', method=RequestMethod.GET, produces = 'application/json')
-    @ResponseBody List<Direction> index(@PathVariable String routeId) {
+    @RequestMapping(value='/stops', method=RequestMethod.GET, produces='application/json')
+    @ResponseBody List<Stop> stops() {
+        mbtaService.stops
+    }
+
+    @RequestMapping(value='/stops/{stopId}', method=RequestMethod.GET, produces='application/json')
+    @ResponseBody Stop stop(@PathVariable String stopId) {
+        mbtaService.getStop(stopId)
+    }
+
+    @RequestMapping(value='/routes/{routeId}/stops', method=RequestMethod.GET, produces='application/json')
+    @ResponseBody List<Direction> routesByStop(@PathVariable String routeId) {
         mbtaService.getStopsByRoute(routeId)
     }
 }

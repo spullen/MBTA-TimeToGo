@@ -1,14 +1,19 @@
 package net.scottpullen.mbta
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 
 @CompileStatic
 @JsonIgnoreProperties(ignoreUnknown = true)
-class StopsByRouteResponse {
+class AlertHeader {
 
-    @JsonProperty('direction')
-    List<Direction> directions
+    @JsonProperty('alert_id')
+    String alertId
+
+    @JsonProperty('header_text')
+    String headerText
+
+    @JsonProperty('effect_name')
+    String effectName
 }

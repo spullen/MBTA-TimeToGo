@@ -2,9 +2,12 @@ package net.scottpullen.services
 
 import groovy.util.logging.Slf4j
 import net.scottpullen.mbta.Direction
+import net.scottpullen.mbta.PredictionsByStopResponse
 import net.scottpullen.mbta.Route
 import net.scottpullen.mbta.RoutesResponse
+import net.scottpullen.mbta.Stop
 import net.scottpullen.mbta.StopsByRouteResponse
+import net.scottpullen.mbta.Trip
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
@@ -39,9 +42,34 @@ class MBTAService {
         }).collect(Collectors.toList())
     }
 
+    @Cacheable(value='stops')
+    List<Stop> getStops() {
+        routes.parallelStream().flatMap({
+            getStopsByRoute(it.routeId).stream()
+        }).flatMap({
+            it.stops.stream()
+        }).distinct().collect(Collectors.toList())
+    }
+
+    @Cacheable(value='stop', key="#stopId")
+    Stop getStop(String stopId) {
+        stops.parallelStream().filter({ it.stopId == stopId }).findFirst().get()
+    }
+
     @Cacheable(value='stopsByRoute', key="#routeId")
     List<Direction> getStopsByRoute(String routeId) {
         StopsByRouteResponse stopsByRouteResponse = restTemplate.getForObject("$baseUrl/stopsByRoute?api_key=$mbtaApiKey&route={routeId}&format=json", StopsByRouteResponse.class, routeId)
         stopsByRouteResponse.directions
+    }
+
+    List<Trip> predictionsByStop(String stopId) {
+        PredictionsByStopResponse predictionsByStopResponse = restTemplate.getForObject("$baseUrl/predictionsbystop?api_key=$mbtaApiKey&stop={stopId}&format=json", PredictionsByStopResponse.class, stopId)
+        predictionsByStopResponse.modes.stream().flatMap({
+            it.routes.stream()
+        }).flatMap({
+            it.directions.stream()
+        }).flatMap({
+            it.trips.stream()
+        }).collect(Collectors.toList())
     }
 }
