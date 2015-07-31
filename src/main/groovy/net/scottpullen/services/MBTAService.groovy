@@ -64,16 +64,13 @@ class MBTAService {
 
     List<Trip> predictionsByStop(String stopId) {
         PredictionsByStopResponse predictionsByStopResponse = restTemplate.getForObject("$baseUrl/predictionsbystop?api_key=$mbtaApiKey&stop={stopId}&format=json", PredictionsByStopResponse.class, stopId)
-        /*predictionsByStopResponse.modes.stream().flatMap({
+
+        predictionsByStopResponse.modes.stream().flatMap({
             it.routes.stream()
         }).flatMap({
             it.directions.stream()
         }).flatMap({
             it.trips.stream()
-        }).collect(Collectors.toList())*/
-
-        log.warn(predictionsByStopResponse.toString())
-
-        []
+        }).collect(Collectors.toList())
     }
 }

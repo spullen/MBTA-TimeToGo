@@ -23,7 +23,7 @@ class PredictionsController extends ApiBaseController {
     }
 
     @RequestMapping(value='/predictions/{stopId}', method=RequestMethod.GET, produces='application/json')
-    @ResponseBody Stop index(@PathVariable String stopId) {
+    @ResponseBody List index(@PathVariable String stopId) {
         mbtaService.predictionsByStop(stopId)
     }
 }

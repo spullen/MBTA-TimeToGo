@@ -14,9 +14,9 @@ class PredictionsByStopResponse {
     @JsonProperty('stop_name')
     String stopName
 
-    //@JsonProperty('mode')
-    //List<Mode> modes
+    @JsonProperty('mode')
+    List<Mode> modes
 
-    //@JsonProperty('alert_headers')
-    //List<AlertHeader> alertHeaders
+    @JsonProperty('alert_headers')
+    List<AlertHeader> alertHeaders
 }
