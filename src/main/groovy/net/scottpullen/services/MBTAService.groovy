@@ -39,6 +39,9 @@ class MBTAService {
             it.modeName == 'Subway'
         }).flatMap({
             it.routes.stream()
+        }).map({
+            it.directions = getStopsByRoute(it.routeId)
+            it
         }).collect(Collectors.toList())
     }
 

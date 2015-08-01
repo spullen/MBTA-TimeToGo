@@ -1,5 +1,6 @@
 package net.scottpullen.controllers.api
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import net.scottpullen.mbta.Direction
 import net.scottpullen.mbta.Stop
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 
 @Slf4j
 @Controller
+@CompileStatic
 class StopsController extends ApiBaseController {
 
     private MBTAService mbtaService
