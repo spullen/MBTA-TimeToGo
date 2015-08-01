@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.run.BootRunTask
 buildscript {
     ext {
         springBootVersion = '1.2.5.RELEASE'
-        groovyVersion = '2.4.3'
+        groovyVersion = '2.4.4'
     }
     repositories {
         jcenter()
@@ -72,7 +72,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.3'
+    compile 'org.codehaus.groovy:groovy-all:2.4.4'
 
     compile("org.springframework.boot:spring-boot-starter-groovy-templates")
     compile("org.springframework.boot:spring-boot-starter-web")
