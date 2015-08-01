@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView
 @CompileStatic
 class HomeController {
 
-    @RequestMapping("/**")
+    @RequestMapping("/")
     ModelAndView index() {
         new ModelAndView('home')
     }
