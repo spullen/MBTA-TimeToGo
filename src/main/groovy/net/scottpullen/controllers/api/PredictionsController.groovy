@@ -1,8 +1,9 @@
 package net.scottpullen.controllers.api
 
+import com.google.maps.model.LatLng
+import com.google.maps.model.TravelMode
 import groovy.util.logging.Slf4j
-import net.scottpullen.mbta.Stop
-import net.scottpullen.services.MBTAService
+import net.scottpullen.services.PredictionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,16 +15,16 @@ import org.springframework.web.bind.annotation.ResponseBody
 @Controller
 class PredictionsController extends ApiBaseController {
 
-    // TODO: create prediction service to pull mbta and google map data
-    private MBTAService mbtaService
+    private PredictionService predictionService
 
     @Autowired
-    StopsController(MBTAService mbtaService) {
-        this.mbtaService = mbtaService
+    StopsController(PredictionService predictionService) {
+        this.predictionService = predictionService
     }
 
+    // 1.5s
     @RequestMapping(value='/predictions/{stopId}', method=RequestMethod.GET, produces='application/json')
     @ResponseBody List index(@PathVariable String stopId) {
-        mbtaService.predictionsByStop(stopId)
+        predictionService.determineTimesToGo(stopId, new LatLng(42.3678149, -71.0900598), TravelMode.WALKING)
     }
 }
