@@ -56,7 +56,7 @@ class PredictionService {
 
         List<Map> results
 
-        CompletableFuture<List<Map>> resultsFuture = etaToStopFuture.thenAcceptBoth(tripsFuture, { Integer etaToStop, List<Trip> trips ->
+        CompletableFuture<Void> resultsFuture = etaToStopFuture.thenAcceptBoth(tripsFuture, { Integer etaToStop, List<Trip> trips ->
             SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM d yyyy @ h:mm a")
 
             use(TimeCategory) {
