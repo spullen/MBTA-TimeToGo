@@ -21,10 +21,12 @@ var Routes = Backbone.Collection.extend({
 });
 
 var Directions = Backbone.Collection.extend({
-    model: Direction
+    model: Direction,
+    comparator: 'direction_id'
 });
 
 var Stops = Backbone.Collection.extend({
+    comparator: 'stop_order'
 });
 
 var RouteListView = Backbone.View.extend({
@@ -57,32 +59,102 @@ var RouteListItemView = Backbone.View.extend({
     }
 });
 
+var DirectionListView = Backbone.View.extend({
+    template: Templates.DirectionList,
+    childViews: [],
+    initialize: function() {
+        _.bindAll(this, 'renderDirections', 'renderDirection');
+    },
+    render: function() {
+        this.$el.html(this.template());
+        this.renderDirections();
+        return this;
+    },
+    renderDirections: function() {
+        this.collection.each(this.renderDirection);
+    },
+    renderDirection: function(direction) {
+        var v = new DirectionListItemView({model: direction});
+        this.$el.append(v.render().el);
+        this.childViews.push(v);
+    },
+    leave: function() {
+        _.each(this.childViews, function(v) {
+            v.leave();
+        });
+        this.childViews = [];
+        this.remove();
+    }
+});
+
+var DirectionListItemView = Backbone.View.extend({
+    className: 'direction-list-item',
+    template: Templates.DirectionListItem,
+    childViews: [],
+    render: function() {
+        this.$el.html(this.template(this.model.attributes));
+        // render stops list
+        return this;
+    },
+    leave: function() {
+        _.each(this.childViews, function(v) {
+            v.remove();
+        });
+        this.childViews = [];
+        this.remove();
+    }
+});
+
 var Router = Backbone.Router.extend({
 
     routes: {
-        '(/)': 'routeList'
+        '(/)': 'routeList',
+        'routes/:routeId(/)': 'viewRouteDirections'
+    },
+
+    initialize: function() {
+        $('#application').empty()
+        $('#application').html(App.routesView.render().el);
     },
 
     routeList: function() {
-        this.swap(App.routesView);
+        console.log('routes list');
     },
 
-    swap: function(view) {
-        $('#application').empty()
-        $('#application').html(view.render().el);
+    viewRouteDirections: function(routeId) {
+        console.log('route view');
+
+        var route = App.routes.findWhere({route_id: routeId});
+        var el = '';
+
+        // clean up the current directions view if present
+        if(this.directionsView && this.directionsView.leave) {
+            this.directionsView.leave()
+        }
+
+        if(route) {
+            console.log(route);
+            console.log(route.directions);
+            this.directionsView = new DirectionListView({collection: route.directions});
+            el = this.directionsView.render().el;
+        } else {
+            el = 'No route found for ' + routeId;
+        }
+
+        App.routesView.$('#route-directions').html(el);
     }
 });
 
 var App = {
     routes: null,
     router: null
-}
+};
 
 function initialize() {
     App.routes = new Routes(window.routes, {parse: true});
-    App.routesView = new RouteListView({collection: App.routes}).render();
+    App.routesView = new RouteListView({collection: App.routes}).render(); // this should really be application view
     App.router = new Router();
-    Backbone.history.start();
+    Backbone.history.start({pushState: true});
 }
 
 $(function() {
@@ -94,7 +166,7 @@ $(function() {
 
         if(href.slice(protocol.length) !== protocol) {
             evt.preventDefault();
-            context.router.navigate(href, true);
+            App.router.navigate(href, {trigger: true});
         }
     });
 });

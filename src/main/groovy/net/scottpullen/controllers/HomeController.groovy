@@ -9,6 +9,7 @@ import net.scottpullen.services.MBTAService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.ModelAndView
 
 @Slf4j
@@ -31,5 +32,13 @@ class HomeController {
         new ModelAndView('home', [
                 routesJSON: routesJSON
         ])
+    }
+
+    // Workaround: wanted a catch all for home (/**) because the client side app routing should take over,
+    //             but the assets don't play nice with it (they would always return the home page instead of the requested asset)
+    // So, instead anything that should go to home on the client side app should be explicitly declared and just forwarded
+    @RequestMapping("/routes/{routeId}")
+    String routes(final WebRequest request) {
+        return "forward:/"
     }
 }
