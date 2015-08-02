@@ -147,14 +147,34 @@ var Router = Backbone.Router.extend({
 
 var App = {
     routes: null,
-    router: null
+    router: null,
+    coords: null
 };
 
 function initialize() {
+    getPosition().done(function(position) {
+        console.log('Retrieved current location');
+        console.log(position);
+        App.coords = position.coords;
+    });
+
     App.routes = new Routes(window.routes, {parse: true});
     App.routesView = new RouteListView({collection: App.routes}).render(); // this should really be application view
     App.router = new Router();
     Backbone.history.start({pushState: true});
+}
+
+
+function getPosition() {
+    var deferred = $.Deferred();
+
+    navigator.geolocation.getCurrentPosition(
+        deferred.resolve,
+        deferred.reject,
+        {}
+    );
+
+    return deferred.promise();
 }
 
 $(function() {
