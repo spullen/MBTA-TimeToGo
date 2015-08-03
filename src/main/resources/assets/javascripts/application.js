@@ -149,12 +149,11 @@ var Router = Backbone.Router.extend({
     },
 
     routeList: function() {
+        /* what should be done here since the application view's already been run... */
         console.log('routes list');
     },
 
     viewRouteDirections: function(routeId) {
-        console.log('route view');
-
         var route = App.routes.findWhere({route_id: routeId});
         var el = '';
 
