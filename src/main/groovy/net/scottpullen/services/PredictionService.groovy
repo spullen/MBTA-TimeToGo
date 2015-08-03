@@ -31,7 +31,9 @@ class PredictionService {
     }
 
     // Non-completable future: 500ms, Completeable future: 200ms - 400ms
-    List<Map> determineTimesToGo(String stopId, LatLng originLatLng, TravelMode mode) {
+    List<Map> determineTimesToGo(String stopId, LatLng originLatLng, String travelModeStr) {
+        TravelMode mode = determineTravelMode(travelModeStr)
+
         Stop stop = mbtaService.getStop(stopId)
 
         CompletableFuture<List<Trip>> tripsFuture = CompletableFuture.supplyAsync({
@@ -67,11 +69,11 @@ class PredictionService {
                     Map m = [:]
 
                     m.headsign = it.tripHeadsign
-                    m.schArrDt = dateFormatter.format(new Date(it.scheduledArrivalDt * 1000))
-                    m.preAway = preAway
-                    m.etaToStation = etaToStop
-                    m.leaveIn = (int) (leaveIn / 60)
-                    m.leaveAt = dateFormatter.format(new Date() + leaveIn.seconds)
+                    m.sch_arr_dt = dateFormatter.format(new Date(it.scheduledArrivalDt * 1000))
+                    m.pre_away = preAway
+                    m.eta_to_station = etaToStop
+                    m.leave_in = (int) (leaveIn / 60)
+                    m.leave_at = dateFormatter.format(new Date() + leaveIn.seconds)
 
                     m
                 }).collect(Collectors.toList())
@@ -82,5 +84,17 @@ class PredictionService {
         CompletableFuture.allOf(resultsFuture).join()
 
         results
+    }
+
+    private TravelMode determineTravelMode(String travelModeStr) {
+        switch(travelModeStr) {
+            case 'driving':
+                TravelMode.DRIVING
+                break
+            case 'walking':
+            default:
+                TravelMode.WALKING
+                break
+        }
     }
 }

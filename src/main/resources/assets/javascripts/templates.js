@@ -10,6 +10,10 @@ Templates['RouteList'] = Handlebars.compile(
         <h1>Select Routes</h1>
         <!-- could also be a drop down -->
         <ul id="route-list"></ul>
+        <select class="travel_mode">
+            <option value="walking" selected="selected">Walking</option>
+            <option value="driving">Driving</option>
+        </select>
         <div id="route-directions"></div>
     */}).toString().match(stringHackRegExp)[1]
 );

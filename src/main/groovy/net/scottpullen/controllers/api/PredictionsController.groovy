@@ -27,6 +27,6 @@ class PredictionsController extends ApiBaseController {
 
     @RequestMapping(value='/predictions/{stopId}', method=RequestMethod.GET, produces='application/json')
     @ResponseBody List index(@PathVariable String stopId, @ModelAttribute("prediction") Prediction prediction, BindingResult bindingResult) {
-        predictionService.determineTimesToGo(stopId, new LatLng(42.3678149, -71.0900598), TravelMode.WALKING)
+        predictionService.determineTimesToGo(stopId, new LatLng(prediction.latitude, prediction.longitude), prediction.travelMode)
     }
 }

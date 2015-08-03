@@ -14,7 +14,11 @@ var Direction = Backbone.Model.extend({
     }
 });
 
-/*var Stop = Backbone.Model.extend({});*/
+var Stop = Backbone.Model.extend({
+    initialize: function() {
+        this.predictions = new Predictions([], {stop: this});
+    }
+});
 
 var Routes = Backbone.Collection.extend({
     model: Route
@@ -26,11 +30,25 @@ var Directions = Backbone.Collection.extend({
 });
 
 var Stops = Backbone.Collection.extend({
+    model: Stop,
     comparator: 'stop_order'
 });
 
+var Predictions = Backbone.Collection.extend({
+    initialize: function(data, options) {
+        this.stop = options.stop;
+    },
+    url: function() {
+        return '/api/predictions/' + this.stop.get('stop_id');
+    }
+});
+
+// Being used as the overall application view
 var RouteListView = Backbone.View.extend({
     template: Templates.RouteList,
+    events: {
+        'change .travel_mode': 'updateTravelMode'
+    },
     initialize: function() {
         _.bindAll(this, 'renderRoutes', 'renderRoute');
     },
@@ -46,6 +64,10 @@ var RouteListView = Backbone.View.extend({
     renderRoute: function(route) {
         var v = new RouteListItemView({model: route});
         this.$('#route-list').append(v.render().el);
+    },
+    updateTravelMode: function(e) {
+        e.preventDefault();
+        App.travelMode = e.target.value;
     }
 });
 
@@ -126,13 +148,31 @@ var StopListItemView = Backbone.View.extend({
     events: {
         'click .get-prediction': 'getPrediction'
     },
+    initialize: function() {
+        this.listenTo(this.model.predictions, 'reset', this.renderPredictions);
+    },
     render: function() {
         this.$el.html(this.template(this.model.attributes));
         return this;
     },
     getPrediction: function(e) {
         e.preventDefault();
+        var self = this;
         console.log('get prediction for ' + this.model.get('stop_id'));
+        this.$('.predictions').html('Retrieving upcoming trips and T2Gs...');
+        App.getPosition().done(function(position) {
+            console.log(position);
+            var data = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                travelMode: App.travelMode // eh...
+            };
+
+            self.model.predictions.fetch({data: data, reset: true});
+        })
+    },
+    renderPredictions: function() {
+        console.log(this.model.predictions);
     }
 });
 
@@ -177,6 +217,7 @@ var App = {
     routes: null,
     router: null,
     coords: null,
+    travelMode: 'walking',
 
     getPosition: function() {
         var deferred = $.Deferred();
@@ -198,7 +239,7 @@ var App = {
 
 function initialize() {
     App.getPosition().done(function(position) {
-        App.coords = position.coords;
+        App.coords = position;
     });
 
     App.routes = new Routes(window.routes, {parse: true});
