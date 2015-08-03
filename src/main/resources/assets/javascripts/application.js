@@ -91,17 +91,48 @@ var DirectionListItemView = Backbone.View.extend({
     className: 'direction-list-item',
     template: Templates.DirectionListItem,
     childViews: [],
+    initialize: function() {
+        _.bindAll(this, 'renderStops', 'renderStop');
+    },
     render: function() {
         this.$el.html(this.template(this.model.attributes));
-        // render stops list
+        this.renderStops();
         return this;
+    },
+    renderStops: function() {
+        this.model.stops.each(this.renderStop);
+    },
+    renderStop: function(stop) {
+        var v = new StopListItemView({model: stop});
+        this.$('#stop-list').append(v.render().el);
+        this.childViews.push(v);
     },
     leave: function() {
         _.each(this.childViews, function(v) {
-            v.remove();
+            if(v.leave) {
+                v.leave();
+            } else {
+                v.remove();
+            }
         });
         this.childViews = [];
         this.remove();
+    }
+});
+
+var StopListItemView = Backbone.View.extend({
+    className: 'stop',
+    template: Templates.StopListItem,
+    events: {
+        'click .get-prediction': 'getPrediction'
+    },
+    render: function() {
+        this.$el.html(this.template(this.model.attributes));
+        return this;
+    },
+    getPrediction: function(e) {
+        e.preventDefault();
+        console.log('get prediction for ' + this.model.get('stop_id'));
     }
 });
 
@@ -133,12 +164,10 @@ var Router = Backbone.Router.extend({
         }
 
         if(route) {
-            console.log(route);
-            console.log(route.directions);
             this.directionsView = new DirectionListView({collection: route.directions});
             el = this.directionsView.render().el;
         } else {
-            el = 'No route found for ' + routeId;
+            el = '<strong>No route found for ' + routeId + '</strong>';
         }
 
         App.routesView.$('#route-directions').html(el);
@@ -148,13 +177,28 @@ var Router = Backbone.Router.extend({
 var App = {
     routes: null,
     router: null,
-    coords: null
+    coords: null,
+
+    getPosition: function() {
+        var deferred = $.Deferred();
+
+        if(this.coords !== null) {
+            console.log("Have coordinates already");
+            deferred.resolve(this.coords);
+        } else {
+            navigator.geolocation.getCurrentPosition(
+                deferred.resolve,
+                deferred.reject,
+                {}
+            );
+        }
+
+        return deferred.promise();
+    }
 };
 
 function initialize() {
-    getPosition().done(function(position) {
-        console.log('Retrieved current location');
-        console.log(position);
+    App.getPosition().done(function(position) {
         App.coords = position.coords;
     });
 
@@ -162,19 +206,6 @@ function initialize() {
     App.routesView = new RouteListView({collection: App.routes}).render(); // this should really be application view
     App.router = new Router();
     Backbone.history.start({pushState: true});
-}
-
-
-function getPosition() {
-    var deferred = $.Deferred();
-
-    navigator.geolocation.getCurrentPosition(
-        deferred.resolve,
-        deferred.reject,
-        {}
-    );
-
-    return deferred.promise();
 }
 
 $(function() {

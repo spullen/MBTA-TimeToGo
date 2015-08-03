@@ -15,7 +15,7 @@ Templates['RouteList'] = Handlebars.compile(
 
 Templates['RouteListItem'] = Handlebars.compile(
     (function() {/*
-        {{route_name}}
+        <a href="/routes/{{route_id}}">{{route_name}}</a>
      */}).toString().match(stringHackRegExp)[1]
 );
 
@@ -27,14 +27,17 @@ Templates['DirectionList'] = Handlebars.compile(
 
 Templates['DirectionListItem'] = Handlebars.compile(
     (function() {/*
-     {{direction_name}}
+     <h2>{{direction_name}}</h2>
      <ul id="stop-list"></ul>
      */}).toString().match(stringHackRegExp)[1]
 );
 
 Templates['StopListItem'] = Handlebars.compile(
     (function() {/*
-
+        <h3>{{stop_name}}</h3>
+        <div>{{stop_lat}}, {{stop_lon}}</div>
+        <div><button class="get-prediction">Retrieve current T2G prediction</button></div>
+        <div class="predictions"></div>
      */}).toString().match(stringHackRegExp)[1]
 );
 
