@@ -216,6 +216,7 @@ var Router = Backbone.Router.extend({
 var App = {
     routes: null,
     router: null,
+    // TODO move coords and travel mode to a model
     coords: null,
     travelMode: 'walking',
 

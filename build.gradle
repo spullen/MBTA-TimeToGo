@@ -77,7 +77,6 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-groovy-templates")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-data-rest")
-    compile("org.springframework.boot:spring-boot-starter-mustache")
     compile('org.springframework:spring-context-support')
     compile('com.google.maps:google-maps-services:0.1.7')
     compile("com.fasterxml.jackson.core:jackson-databind")
