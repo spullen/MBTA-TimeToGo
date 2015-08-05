@@ -8,4 +8,45 @@ layout 'layouts/main.tpl',
                     window.routes = ${routesJSON};
                 """
             }
+
+            script(type: 'text/x-handlebars', id: 'route-list-tpl') {
+                yieldUnescaped """
+                <h1>Select Routes</h1>
+                <!-- could also be a drop down -->
+                <ul id="route-list"></ul>
+                <select class="travel_mode">
+                    <option value="walking" selected="selected">Walking</option>
+                    <option value="driving">Driving</option>
+                </select>
+                <div id="route-directions"></div>
+                """
+            }
+
+            script(type: 'text/x-handlebars', id: 'route-list-item-tpl') {
+                yieldUnescaped """
+                <a href="/routes/{{route_id}}">{{route_name}}</a>
+                """
+            }
+
+            script(type: 'text/x-handlebars', id: 'direction-list-tpl') {
+                yieldUnescaped """
+                <div id="direction-list"></div>
+                """
+            }
+
+            script(type: 'text/x-handlebars', id: 'direction-list-item-tpl') {
+                yieldUnescaped """
+                <h2>{{direction_name}}</h2>
+                     <ul id="stop-list"></ul>
+                """
+            }
+
+            script(type: 'text/x-handlebars', id: 'stop-list-item-tpl') {
+                yieldUnescaped """
+                <h3>{{stop_name}}</h3>
+                <div>{{stop_lat}}, {{stop_lon}}</div>
+                <div><button class="get-prediction">Retrieve/update current T2G prediction</button></div>
+                <div class="predictions"></div>
+                """
+            }
         }
