@@ -49,4 +49,16 @@ layout 'layouts/main.tpl',
                 <div class="predictions"></div>
                 """
             }
+
+            script(type: 'text/x-handlebars', id: 'prediction-list-tpl') {
+                yieldUnescaped """
+                <ul>
+                {{#each predictions}}
+                    <li>Leave at <strong>{{leave_at}}</strong> to catch the train at <strong>{{sch_arr_dt}}</strong> going to <strong>{{headsign}}</strong>.</li>
+                {{else}}
+                    <li>No estimates available for travel mode.</li>
+                {{/each}}
+                </ul>
+                """
+            }
         }

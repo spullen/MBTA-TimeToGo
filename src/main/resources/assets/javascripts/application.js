@@ -67,7 +67,7 @@ var RouteListView = Backbone.View.extend({
     },
     updateTravelMode: function(e) {
         e.preventDefault();
-        App.travelMode = e.target.value;
+        App.state.set('travelMode', e.target.value);
     }
 });
 
@@ -149,6 +149,7 @@ var StopListItemView = Backbone.View.extend({
         'click .get-prediction': 'getPrediction'
     },
     initialize: function() {
+        _.bindAll(this, 'renderPredictions');
         this.listenTo(this.model.predictions, 'reset', this.renderPredictions);
     },
     render: function() {
@@ -158,21 +159,23 @@ var StopListItemView = Backbone.View.extend({
     getPrediction: function(e) {
         e.preventDefault();
         var self = this;
-        console.log('get prediction for ' + this.model.get('stop_id'));
         this.$('.predictions').html('Retrieving upcoming trips and T2Gs...');
         App.getPosition().done(function(position) {
-            console.log(position);
             var data = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
-                travelMode: App.travelMode // eh...
+                travelMode: App.state.get('travelMode')
             };
+
+            console.log(data);
 
             self.model.predictions.fetch({data: data, reset: true});
         })
     },
     renderPredictions: function() {
         console.log(this.model.predictions);
+        this.$('.predictions').empty()
+        this.$('.predictions').html(Templates.PredictionList({predictions: this.model.predictions.toJSON()}));
     }
 });
 
@@ -213,12 +216,17 @@ var Router = Backbone.Router.extend({
     }
 });
 
+var State = Backbone.Model.extend({
+    defaults: {
+        travelMode: 'walking'
+    }
+})
+
 var App = {
     routes: null,
     router: null,
-    // TODO move coords and travel mode to a model
+    state: new State(),
     coords: null,
-    travelMode: 'walking',
 
     getPosition: function() {
         var deferred = $.Deferred();
