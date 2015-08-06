@@ -166,14 +166,10 @@ var StopListItemView = Backbone.View.extend({
                 longitude: position.coords.longitude,
                 travelMode: App.state.get('travelMode')
             };
-
-            console.log(data);
-
             self.model.predictions.fetch({data: data, reset: true});
         })
     },
     renderPredictions: function() {
-        console.log(this.model.predictions);
         this.$('.predictions').empty()
         this.$('.predictions').html(Templates.PredictionList({predictions: this.model.predictions.toJSON()}));
     }
