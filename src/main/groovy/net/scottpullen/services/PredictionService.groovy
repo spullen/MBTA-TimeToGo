@@ -91,6 +91,9 @@ class PredictionService {
             case 'driving':
                 TravelMode.DRIVING
                 break
+            case 'bicycling':
+                TravelMode.BICYCLING
+                break
             case 'walking':
             default:
                 TravelMode.WALKING

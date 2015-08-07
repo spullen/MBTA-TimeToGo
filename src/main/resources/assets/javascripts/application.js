@@ -159,7 +159,7 @@ var StopListItemView = Backbone.View.extend({
     getPrediction: function(e) {
         e.preventDefault();
         var self = this;
-        this.$('.predictions').html('Retrieving upcoming trips and T2Gs...');
+        this.$('.predictions').html('Updating coordinates and retrieving upcoming trips and T2Gs...');
         App.getPosition().done(function(position) {
             var data = {
                 latitude: position.coords.latitude,

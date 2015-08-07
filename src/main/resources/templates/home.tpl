@@ -17,6 +17,7 @@ layout 'layouts/main.tpl',
                 <select class="travel_mode">
                     <option value="walking" selected="selected">Walking</option>
                     <option value="driving">Driving</option>
+                    <option value="bicycling">Bicycling</option>
                 </select>
                 <div id="route-directions"></div>
                 """
