@@ -55,6 +55,7 @@ var RouteListView = Backbone.View.extend({
     render: function() {
         this.$el.html(this.template());
         this.renderRoutes();
+        this.renderCoordinates();
         return this;
     },
     renderRoutes: function() {
@@ -64,6 +65,11 @@ var RouteListView = Backbone.View.extend({
     renderRoute: function(route) {
         var v = new RouteListItemView({model: route});
         this.$('#route-list').append(v.render().el);
+    },
+    renderCoordinates: function() {
+        //eh..
+        var v = new CoordinatesView({model: App.coords});
+        this.$('#coordinates').append(v.render().el);
     },
     updateTravelMode: function(e) {
         e.preventDefault();
@@ -75,6 +81,17 @@ var RouteListItemView = Backbone.View.extend({
     tagName: 'li',
     className: 'route-list-item',
     template: Templates.RouteListItem,
+    render: function() {
+        this.$el.html(this.template(this.model.attributes));
+        return this;
+    }
+});
+
+var CoordinatesView = Backbone.View.extend({
+    template: Templates.Coordinates,
+    initialize: function() {
+        this.listenTo(this.model, 'change', this.render);
+    },
     render: function() {
         this.$el.html(this.template(this.model.attributes));
         return this;
@@ -160,23 +177,22 @@ var StopListItemView = Backbone.View.extend({
         e.preventDefault();
         var self = this;
         this.$('.estimations').html('Updating coordinates and retrieving upcoming trips and T2Gs...');
-        App.getPosition().done(function(position) {
+        App.coords.fetch().done(function(coords) {
             var data = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
+                latitude: coords.get('latitude'),
+                longitude: coords.get('longitude'),
                 travelMode: App.state.get('travelMode')
             };
             self.model.estimations.fetch({data: data, reset: true});
-        })
+        });
     },
     renderEstimations: function() {
-        this.$('.estimations').empty()
+        this.$('.estimations').empty();
         this.$('.estimations').html(Templates.EstimationList({estimations: this.model.estimations.toJSON()}));
     }
 });
 
 var Router = Backbone.Router.extend({
-
     routes: {
         '(/)': 'routeList',
         'routes/:routeId(/)': 'viewRouteDirections'
@@ -216,36 +232,45 @@ var State = Backbone.Model.extend({
     defaults: {
         travelMode: 'walking'
     }
-})
+});
 
-var App = {
-    routes: null,
-    router: null,
-    state: new State(),
-    coords: null,
-
-    getPosition: function() {
+var Coords = Backbone.Model.extend({
+    fetch: function(options) {
         var deferred = $.Deferred();
 
-        if(this.coords !== null) {
+        if(this.get('latitude') && this.get('longitude')) {
             console.log("Have coordinates already");
-            deferred.resolve(this.coords);
+            deferred.resolve(this);
         } else {
+            var self = this;
             navigator.geolocation.getCurrentPosition(
-                deferred.resolve,
+                function(position) {
+                    self.set({latitude: position.coords.latitude, longitude: position.coords.longitude });
+                    deferred.resolve(self);
+                },
                 deferred.reject,
                 {}
             );
         }
 
         return deferred.promise();
+    },
+    defaults: {
+        latitude: null,
+        longitude: null
     }
+});
+
+var App = {
+    routes: null,
+    router: null,
+    state: new State(),
+    coords: null
 };
 
 function initialize() {
-    App.getPosition().done(function(position) {
-        App.coords = position;
-    });
+    App.coords = new Coords();
+    App.coords.fetch();
 
     App.routes = new Routes(window.routes, {parse: true});
     App.routesView = new RouteListView({collection: App.routes}).render(); // this should really be application view

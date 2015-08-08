@@ -19,7 +19,19 @@ layout 'layouts/main.tpl',
                     <option value="driving">Driving</option>
                     <option value="bicycling">Bicycling</option>
                 </select>
+                <div>
+                <div id="coordinates"></div>
                 <div id="route-directions"></div>
+                """
+            }
+
+            script(type: 'text/x-handlebars', id: 'coordinates-tpl') {
+                yieldUnescaped """
+                {{#if latitude}}
+                Current coordinates (Lat, Lon): ({{latitude}}, {{longitude}})
+                {{else}}
+                No coordinates found, or hasn't finished updating.
+                {{/if}}
                 """
             }
 
