@@ -31,7 +31,7 @@ idea {
 }
 
 jar {
-    baseName = 'MBTATimeToGo'
+    baseName = 'MBTATime2Go'
     //version = '0.0.1-SNAPSHOT'
 }
 
