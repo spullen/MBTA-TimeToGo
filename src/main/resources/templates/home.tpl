@@ -46,15 +46,15 @@ layout 'layouts/main.tpl',
                 yieldUnescaped """
                 <h3>{{stop_name}}</h3>
                 <div>{{stop_lat}}, {{stop_lon}}</div>
-                <div><button class="get-prediction">Retrieve/update current T2G prediction</button></div>
-                <div class="predictions"></div>
+                <div><button class="get-estimations">Retrieve/update current T2G estimations</button></div>
+                <div class="estimations"></div>
                 """
             }
 
-            script(type: 'text/x-handlebars', id: 'prediction-list-tpl') {
+            script(type: 'text/x-handlebars', id: 'estimation-list-tpl') {
                 yieldUnescaped """
                 <ul>
-                {{#each predictions}}
+                {{#each estimations}}
                     <li>Leave at <strong>{{leave_at}}</strong> to catch the train at <strong>{{sch_arr_dt}}</strong> going to <strong>{{headsign}}</strong>.</li>
                 {{else}}
                     <li>No estimates available for travel mode.</li>

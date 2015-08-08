@@ -16,7 +16,7 @@ var Direction = Backbone.Model.extend({
 
 var Stop = Backbone.Model.extend({
     initialize: function() {
-        this.predictions = new Predictions([], {stop: this});
+        this.estimations = new Estimations([], {stop: this});
     }
 });
 
@@ -34,12 +34,12 @@ var Stops = Backbone.Collection.extend({
     comparator: 'stop_order'
 });
 
-var Predictions = Backbone.Collection.extend({
+var Estimations = Backbone.Collection.extend({
     initialize: function(data, options) {
         this.stop = options.stop;
     },
     url: function() {
-        return '/api/predictions/' + this.stop.get('stop_id');
+        return '/api/estimations/' + this.stop.get('stop_id');
     }
 });
 
@@ -146,32 +146,32 @@ var StopListItemView = Backbone.View.extend({
     className: 'stop',
     template: Templates.StopListItem,
     events: {
-        'click .get-prediction': 'getPrediction'
+        'click .get-estimations': 'getEstimations'
     },
     initialize: function() {
-        _.bindAll(this, 'renderPredictions');
-        this.listenTo(this.model.predictions, 'reset', this.renderPredictions);
+        _.bindAll(this, 'renderEstimations');
+        this.listenTo(this.model.estimations, 'reset', this.renderEstimations);
     },
     render: function() {
         this.$el.html(this.template(this.model.attributes));
         return this;
     },
-    getPrediction: function(e) {
+    getEstimations: function(e) {
         e.preventDefault();
         var self = this;
-        this.$('.predictions').html('Updating coordinates and retrieving upcoming trips and T2Gs...');
+        this.$('.estimations').html('Updating coordinates and retrieving upcoming trips and T2Gs...');
         App.getPosition().done(function(position) {
             var data = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
                 travelMode: App.state.get('travelMode')
             };
-            self.model.predictions.fetch({data: data, reset: true});
+            self.model.estimations.fetch({data: data, reset: true});
         })
     },
-    renderPredictions: function() {
-        this.$('.predictions').empty()
-        this.$('.predictions').html(Templates.PredictionList({predictions: this.model.predictions.toJSON()}));
+    renderEstimations: function() {
+        this.$('.estimations').empty()
+        this.$('.estimations').html(Templates.EstimationList({estimations: this.model.estimations.toJSON()}));
     }
 });
 

@@ -19,13 +19,13 @@ import java.util.stream.Collectors
 
 @Slf4j
 @Service
-class PredictionService {
+class EstimationService {
 
     private GeoApiContext geoApiContext
     private MBTAService mbtaService
 
     @Autowired
-    PredictionService(GeoApiContext geoApiContext, MBTAService mbtaService) {
+    EstimationService(GeoApiContext geoApiContext, MBTAService mbtaService) {
         this.geoApiContext = geoApiContext
         this.mbtaService = mbtaService
     }

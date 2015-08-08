@@ -2,7 +2,7 @@ package net.scottpullen.commands
 
 import com.google.maps.model.TravelMode
 
-class Prediction {
+class Estimate {
     BigDecimal latitude
     BigDecimal longitude
     String travelMode
