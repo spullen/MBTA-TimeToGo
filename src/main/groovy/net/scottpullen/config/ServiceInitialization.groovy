@@ -13,7 +13,7 @@ class ServiceInitialization implements ServletContextInitializer {
 
     @Override
     void onStartup(ServletContext servletContext) throws ServletException {
-        TimeZone.default = TimeZone.getTimeZone("America/New_Yor")
+        TimeZone.default = TimeZone.getTimeZone("America/New_York")
         //TimeZone.default.useDaylightTime()
     }
 }
